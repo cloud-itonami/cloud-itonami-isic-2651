@@ -1,0 +1,42 @@
+{:itonami.blueprint/id "cloud-itonami-isic-2651"
+ :itonami.blueprint/name "Manufacture of measuring, testing, navigating and control equipment"
+ :itonami.blueprint/isic-rev5 "2651"
+ :itonami.blueprint/domain :measuring-control-instrument/manufacturing
+ :itonami.blueprint/license "AGPL-3.0-or-later"
+ :itonami.blueprint/social-impact [:worker-safety :process-safety :measurement-integrity]
+ :itonami.blueprint/governor :measuring-control-equipment-plant-operations-governor
+ :itonami.blueprint/robotics true
+ :itonami.blueprint/required-technologies [:robotics :identity :forms :dmn :bpmn :audit-ledger :eda :cae]
+ :itonami.blueprint/optional-technologies []
+ :itonami.blueprint/status :public-oss
+ :itonami.blueprint/maturity :implemented
+ :itonami.blueprint/implemented-slice
+ "MeasCtrlAdvisor ⊣ Measuring Control Equipment Plant Operations
+ Governor, langgraph-clj StateGraph, append-only audit ledger. A plant
+ OPERATIONS COORDINATION actor for measuring/testing/navigating/
+ control-equipment manufacturing (precision-calibration/assembly/
+ test lines producing process-control instruments, laboratory
+ analytical instruments, test-and-inspection equipment, navigational
+ instruments, meters, radiation-detection instruments, surveying
+ instruments and meteorological instruments) -- not direct
+ calibration/assembly-line-equipment control authority and not a
+ metrology-certification authority (e.g. a NIST-traceable calibration
+ certificate). Four ops (`:log-production-batch` /
+ `:schedule-maintenance` / `:flag-safety-concern` /
+ `:coordinate-shipment`), all `:effect :propose` only. Thirteen
+ concrete governor checks elaborate this blueprint's four HARD
+ invariants: propose-only effect, closed op allowlist, closed
+ proposal-effect allowlist (no direct calibration/assembly-line-
+ equipment control), permanent equipment-actuate block, permanent
+ metrology-certification-authority block (this actor never
+ self-issues a NIST-traceable calibration certificate), independent
+ equipment verification/registration before maintenance scheduling,
+ independent batch verification/registration before shipment
+ coordination, independent shipment-quantity recompute against the
+ batch's own logged production quantity, double-schedule guard,
+ instrument-class validation, calibration-accuracy plausibility
+ validation, and defect-rate plausibility validation. Safety-concern
+ flagging (calibration-drift/precision-defect/electrical-safety
+ hazard) ALWAYS escalates to a human plant supervisor;
+ `:log-production-batch` is the only op eligible to auto-commit, and
+ only at phase 3 when governor-clean."}
