@@ -78,9 +78,25 @@ clojure -M:dev:test
 # Run the demo
 clojure -M:dev:run
 
+# Regenerate docs/samples/operator-console.html by driving the REAL actor
+# (measctrlmfg.operation -> governor -> store) over the seeded batches and
+# equipment. Deterministic: two runs are byte-identical.
+clojure -M:dev:render-html
+
 # Lint
 clojure -M:lint
 ```
+
+The generated page ([`docs/samples/operator-console.html`](docs/samples/operator-console.html))
+is not a mockup: every id, status and refusal reason on it is what one real
+actor run left in `measctrlmfg.store`, including ten distinct HARD holds
+(`equipment-not-verified`, `batch-not-verified`, `shipment-quantity-exceeded`,
+`actuate-equipment-blocked`, `already-scheduled`,
+`metrology-certification-authority-blocked`, `not-propose-effect`,
+`unknown-op`/`equipment-control-blocked`, `invalid-instrument-class`,
+`invalid-calibration-accuracy-ppm`, `invalid-defect-rate`) and one human
+rejection. See `measctrlmfg.render-html`'s docstring for what each subject
+exercises.
 
 ## Status
 
