@@ -1,0 +1,32 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:dev:physics` runs it.
+;;
+;; README: the ISIC 2651 plant calibrates, assembles and tests measuring,
+;; testing, navigating and control instruments. The robots' physical work:
+;; soaking an instrument body in the calibration room until it has come to
+;; the reference temperature (calibrating earlier bakes a thermal error into
+;; the certificate data), and placing the instrument on the calibration bench.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isic-2651"
+ :cases
+ [{:id :calibration-room-soak
+   :kind :thermal
+   :procedure "a stainless-steel instrument body (flow meter / pressure transmitter) brought in at 18 C soaks in the 23 C calibration room until its core is within 0.1 C of the room (still air, half-section, insulated mid-plane)"
+   :params {:conductivity-w-mk 16.0 :density-kg-m3 8000.0 :specific-heat-j-kgk 500.0
+            :t0-c 18.0 :t-hot-c 23.0 :h-front-w-m2k 8.0 :h-back-w-m2k 0.0
+            :threshold-c 22.9 :duration-s 90000.0 :nodes 4}
+   :sweep {:param :thickness-m :values [0.005 0.010 0.020 0.030 0.040]}
+   :quantity :time-to-threshold-s
+   :limit {:max 14400.0 :basis "estimate: a 4-hour acclimatisation slot before calibration; still-air h of 8 W/m2K is an estimate"}
+   :boundary {:lo 0.003 :hi 0.06}}
+  {:id :instrument-onto-bench
+   :kind :manipulator
+   :procedure "arm lifts an instrument from the acclimatisation rack onto the calibration bench's mounting plate"
+   :params {:l1-m 0.45 :l2-m 0.40 :m1-kg 4.0 :m2-kg 2.5
+            :from [0.50 0.40] :to [0.60 0.05] :duration-s 2.5 :steps 400}
+   :sweep {:param :payload-kg :values [0.5 1.0 2.0 4.0 6.0]}
+   :quantity :peak-tau1-nm
+   :limit {:max 50.0 :basis "estimate: continuous shoulder torque of a ~5 kg-class collaborative arm"}
+   :boundary {:lo 0.1 :hi 30.0}}]}
